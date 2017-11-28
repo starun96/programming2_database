@@ -53,16 +53,22 @@ def is_conflict_serializable(schedule):
             return False
     return True
 
-
-
 def create_serial_equiv_schedule():
-    pass
+    return set()
 
 
 def create_at_least_one_cycle():
     for i in graph_dict:
         if cycle(i, []):
             return cycle(i, [])
+
+
+def print_schedule(schedule):
+    schedule_reformatted = set()
+    for instruction in schedule:
+        instruction_reformatted = instruction[0] + instruction[1] + '(' + instruction[2] + ')'
+        schedule_reformatted.add(instruction_reformatted)
+    print(schedule_reformatted)
 
 
 if __name__ == '__main__':
