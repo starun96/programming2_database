@@ -53,9 +53,37 @@ def is_conflict_serializable(schedule):
             return False
     return True
 
-def create_serial_equiv_schedule():
-    return set()
-
+def create_serial_equiv_schedule(schedule):
+    global graph_dict
+    graph = graph_dict
+    equiv_schedule = []
+    # find nodes with no incoming edges
+    no_inc_edge = set(graph.keys())
+    for i in graph:
+        for j in graph[i]:
+            if j in no_inc_edge:
+                no_inc_edge.remove(j)
+    while len(no_inc_edge) > 0:
+        n = no_inc_edge.pop()
+        equiv_schedule.append(n)
+        graph[n] = set()
+        new_no_inc_edge = set(graph.keys())
+        for i in graph:
+          for j in graph[i]:
+                if j in new_no_inc_edge:
+                    new_no_inc_edge.remove(j)
+        for i in equiv_schedule:
+            if i in new_no_inc_edge:
+                new_no_inc_edge.remove(i)
+        no_inc_edge = new_no_inc_edge
+    final_schedule = []
+    for t in equiv_schedule:
+        for inst in schedule:
+            if inst[1] == t:
+                final_schedule.append(inst)
+    return final_schedule
+    
+        
 
 def create_at_least_one_cycle():
     for i in graph_dict:
@@ -64,20 +92,23 @@ def create_at_least_one_cycle():
 
 
 def print_schedule(schedule):
-    schedule_reformatted = set()
+    schedule_reformatted = []
     for instruction in schedule:
         instruction_reformatted = instruction[0] + instruction[1] + '(' + instruction[2] + ')'
-        schedule_reformatted.add(instruction_reformatted)
-    print(schedule_reformatted)
+        schedule_reformatted.append(instruction_reformatted)
+    for i in schedule_reformatted:
+        print(i, end=" ")
+    print()
 
 
 if __name__ == '__main__':
     prompt = 'Pass in a list of instructions on one line, separated by a space. Examples of instructions are R1(A) and W2(B).\n'
     schedule = create_schedule_from_input(input(prompt))
-    print(schedule)
+    #print(schedule)
     cs = is_conflict_serializable(schedule)
     print("Conflict Serializable:", cs)
     if cs:
-        create_serial_equiv_schedule()
+        print("Serializable Equivalent Schedule", end=": ")
+        print_schedule(create_serial_equiv_schedule(schedule))
     else:
         print("A cycle:", create_at_least_one_cycle())
