@@ -18,22 +18,32 @@ def create_schedule_from_input(input):
 
     return schedule
 
+
 def is_conflict_serializable(schedule):
-    pass
+    return False
 
 
 def create_serial_equiv_schedule():
-    pass
+    return set()
 
 
 def create_at_least_one_cycle():
     pass
 
 
+def print_schedule(schedule):
+    schedule_reformatted = set()
+    for instruction in schedule:
+        instruction_reformatted = instruction[0] + instruction[1] + '(' + instruction[2] + ')'
+        schedule_reformatted.add(instruction_reformatted)
+    print(schedule_reformatted)
+
+
 if __name__ == '__main__':
     prompt = 'Pass in a set of instructions on one line, separated by a space. Examples of instructions are R1(A) and W2(B).\n'
     schedule = create_schedule_from_input(input(prompt))
-    print(schedule)
-    is_conflict_serializable(schedule)
-    create_serial_equiv_schedule()
-    create_at_least_one_cycle()
+
+    if (is_conflict_serializable(schedule)):
+        print_schedule(create_serial_equiv_schedule())
+    else:
+        print(create_at_least_one_cycle())
